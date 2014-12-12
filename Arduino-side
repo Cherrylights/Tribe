@@ -1,45 +1,67 @@
-#include <Servo.h>
+const int VERT1 = A0; // analog
+const int HORIZ1 = A1; // analog
+const int SEL1 = 2; // digital
 
-Servo myservo;
-int pos = 0;
-char val;
-int ledPin = 2;
-int brightness = 0;
-int fadeAmount = 5;
+const int VERT2 = A2; // analog
+const int HORIZ2 = A3; // analog
+const int SEL2 = 4; // digital
 
-void setup() {
-  pinMode(ledPin, OUTPUT);
-  pinMode(11, OUTPUT);
+// Also connect the joystick VCC to Arduino 5V, and joystick GND to Arduino GND.
+
+// This sketch outputs serial data at 9600 baud (open Serial Monitor to view).
+
+void setup()
+{
+  // make the SEL line an input
+  pinMode(SEL1,INPUT);
+  digitalWrite(SEL1,HIGH);
+
+  pinMode(SEL2,INPUT);
+  digitalWrite(SEL2,HIGH);
+
+  // set up serial port for output
   Serial.begin(9600);
-  myservo.attach(9);
 }
 
-void loop() {
-  analogWrite(11, brightness);    
-  brightness = brightness + fadeAmount;
-  if (brightness == 0 || brightness == 255) {
-    fadeAmount = -fadeAmount ; 
-  }       
-  delay(30);  
+void loop() 
+{
+  int vertical1, horizontal1, select1;
+  vertical1 = analogRead(VERT1); // will be 0-1023
+  horizontal1 = analogRead(HORIZ1); // will be 0-1023
+  select1 = digitalRead(SEL1); // will be HIGH (1) if not pressed, and LOW (0) if pressed
 
-  if(Serial.available()) {
-    val = Serial.read();
-  }
+  int vertical2, horizontal2, select2;
+  vertical2 = analogRead(VERT2); // will be 0-1023
+  horizontal2 = analogRead(HORIZ2); // will be 0-1023
+  select2 = digitalRead(SEL2); // will be HIGH (1) if not pressed, and LOW (0) if pressed
 
-  if(val == '1') {
-    digitalWrite(ledPin, HIGH);
-    if(pos < 120) { 
-      pos += 1;
-    }
-    myservo.write(pos);
+
+  // print out the values
+
+  Serial.print(vertical1);
+  Serial.print(","); 
+  Serial.print(horizontal1);
+  Serial.print(",");
+  if(select1 == HIGH){
+    Serial.print(select1);
+  } 
+  else {
+    Serial.print(select1);
   }
-  if(val == '0') {
-    digitalWrite(ledPin, LOW);
-    if(pos >= 10) {
-      pos-=1;
-    }
-    myservo.write(pos);
+  Serial.print(","); 
+  Serial.print(vertical2);
+  Serial.print(","); 
+  Serial.print(horizontal2);
+  Serial.print(",");
+  if(select2 == HIGH) {
+    Serial.println(select2);
+  } 
+  else {
+    Serial.println(select2);
   }
-}
+  delay(50);
+}  
+
+
 
 

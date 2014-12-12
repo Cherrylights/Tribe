@@ -1,4 +1,4 @@
-Cursed-Monster
+Tribe
 ==============
 
-Project1 for the creation and computation course in OCAD
+Project 3 for the creation and computation course in OCADU
